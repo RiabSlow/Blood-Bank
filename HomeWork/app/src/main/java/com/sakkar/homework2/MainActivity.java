@@ -1,6 +1,7 @@
 package com.sakkar.homework2;
 
 import android.content.Intent;
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -11,33 +12,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     TextView textView1,textView2,textView3;
     Button button;
-    static int startCount=0,createCount=0,resumeCount=0;
+    int startCount=0,createCount=0,resumeCount=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initiateAll();
 
-        MainActivity.createCount+=1;
+        createCount+=1;
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        startCount=savedInstanceState.getInt("StartCount");
+        createCount=savedInstanceState.getInt("CreateCount");
+        resumeCount=savedInstanceState.getInt("ResumeCount");
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        MainActivity.startCount+=1;
+        startCount+=1;
     }
 
     @Override
     protected void onResume() {
         super.onStart();
-        MainActivity.resumeCount+=1;
+        resumeCount+=1;
         showAll();
     }
 
     private void showAll() {
-        textView1.setText(getString(R.string.oncreate_initiated)+" "+MainActivity.createCount+"Times");
-        textView2.setText(getString(R.string.onstart_initiated)+" "+MainActivity.startCount+"Times");
-        textView3.setText(getString(R.string.onresume_initiated)+" "+MainActivity.resumeCount+"Times");
+        textView1.setText(getString(R.string.oncreate_initiated)+" "+createCount+"Times");
+        textView2.setText(getString(R.string.onstart_initiated)+" "+startCount+"Times");
+        textView3.setText(getString(R.string.onresume_initiated)+" "+resumeCount+"Times");
     }
 
     private void initiateAll() {
@@ -52,5 +61,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         Intent intent=new Intent(this,Main2Activity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("StartCount",startCount);
+        outState.putInt("CreateCount",createCount);
+        outState.putInt("ResumeCount",resumeCount);
     }
 }
